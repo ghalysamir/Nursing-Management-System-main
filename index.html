@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Nursing Management System</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2314b8a6' d='M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5zM360 232H296v64c0 13.3-10.7 24-24 24s-24-10.7-24-24V232H184c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V120c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24z'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/modules.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-lang-switch">
+    <button class="lang-btn" data-lang="en" title="English">EN</button>
+    <button class="lang-btn" data-lang="ar" title="العربية">AR</button>
+    <button class="theme-toggle-btn" id="loginThemeToggle" title="Theme"><i class="fa-solid fa-moon"></i></button>
+  </div>
+
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-logo"><i class="fa-solid fa-heart-pulse"></i></div>
+      <h1 data-i18n="appName">Smart Nursing</h1>
+      <p data-i18n="appSubtitle">Management System</p>
+    </div>
+
+    <form id="loginForm" class="login-form">
+      <div class="form-group">
+        <label for="loginUsername"><i class="fa-solid fa-user"></i> <span data-i18n="username">Username</span></label>
+        <input type="text" id="loginUsername" placeholder="admin / headnurse / nurse1" autocomplete="username" required />
+      </div>
+      <div class="form-group">
+        <label for="loginPassword"><i class="fa-solid fa-lock"></i> <span data-i18n="password">Password</span></label>
+        <input type="password" id="loginPassword" placeholder="••••••" autocomplete="current-password" required />
+      </div>
+      <div id="loginError" class="login-error hidden"></div>
+      <button type="submit" class="btn btn-primary btn-block">
+        <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="signIn">Sign In</span>
+      </button>
+    </form>
+
+    <div class="demo-accounts">
+      <p class="demo-title"><span data-i18n="demoAccounts">Demo Accounts</span> (<span data-i18n="password">Password</span>: <strong>123456</strong>)</p>
+      <div class="demo-grid">
+        <button type="button" class="demo-chip" data-user="admin" data-pass="123456"><i class="fa-solid fa-user-shield"></i> Admin</button>
+        <button type="button" class="demo-chip" data-user="headnurse" data-pass="123456"><i class="fa-solid fa-user-nurse"></i> Head Nurse</button>
+        <button type="button" class="demo-chip" data-user="nurse1" data-pass="123456"><i class="fa-solid fa-user"></i> Nurse 1</button>
+        <button type="button" class="demo-chip" data-user="nurse2" data-pass="123456"><i class="fa-solid fa-user"></i> Nurse 2</button>
+        <button type="button" class="demo-chip" data-user="nurse3" data-pass="123456"><i class="fa-solid fa-user"></i> Nurse 3</button>
+      </div>
+    </div>
+  </div>
+  <p class="login-footer"><span data-i18n="prototypeFooter">Prototype · Fictional data only · Not for clinical use</span></p>
+</div>
+
+<!-- ============ MAIN APP SHELL ============ -->
+<div id="appShell" class="app-shell hidden">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <i class="fa-solid fa-heart-pulse"></i>
+      <span data-i18n="appName">Smart Nursing</span>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-footer">
+      <div class="shift-badge" id="sidebarShift">
+        <i class="fa-solid fa-clock"></i>
+        <div>
+          <small data-i18n="currentShift">Current Shift</small>
+          <strong id="sidebarShiftText">—</strong>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Column -->
+  <div class="main-col">
+    <header class="topbar">
+      <button class="icon-btn" id="menuToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="topbar-title">
+        <h2 id="pageTitle" data-i18n="dashboard">Dashboard</h2>
+        <span class="breadcrumb" id="pageBreadcrumb">Home</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="lang-switcher">
+          <button class="icon-btn lang-toggle" id="langToggle" title="Language">
+            <span id="currentLangLabel">EN</span>
+          </button>
+          <div class="lang-dropdown hidden" id="langDropdown">
+            <button data-lang="en"><span>🇬🇧</span> English</button>
+            <button data-lang="ar"><span>🇸🇦</span> العربية</button>
+          </div>
+        </div>
+        <button class="icon-btn" id="themeToggle" title="Theme"><i class="fa-solid fa-moon"></i></button>
+        <button class="icon-btn sound-toggle" id="soundToggle" title="Sound alerts"><i class="fa-solid fa-volume-xmark"></i></button>
+        <button class="icon-btn notif-btn" id="notifBtn" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span class="notif-badge hidden" id="notifBadge">0</span>
+        </button>
+        <div class="user-menu">
+          <button class="user-menu-btn" id="userMenuBtn">
+            <span class="avatar" id="userAvatar">?</span>
+            <span class="user-meta">
+              <strong id="userNameTop">—</strong>
+              <small id="userRoleTop">—</small>
+            </span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="user-dropdown hidden" id="userDropdown">
+            <button id="settingsBtn"><i class="fa-solid fa-gear"></i> <span data-i18n="settings">Settings</span></button>
+            <button id="resetDemoBtn"><i class="fa-solid fa-rotate"></i> <span data-i18n="resetDemo">Reset Demo Data</span></button>
+            <button id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="logout">Logout</span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="notif-panel hidden" id="notifPanel">
+      <div class="notif-panel-header">
+        <h3><i class="fa-solid fa-bell"></i> <span data-i18n="notifications">Notifications</span></h3>
+        <div class="notif-panel-actions" id="notifPanelActions"></div>
+        <button class="icon-btn" id="closeNotifPanel"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="notif-panel-body" id="notifList"></div>
+    </div>
+
+    <main class="page-content" id="pageContent"></main>
+  </div>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <h3 id="modalTitle">Modal</h3>
+      <button class="icon-btn" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast-root" id="toastRoot"></div>
+
+<!-- ============ SCRIPTS (strict order, cache-busted v=6) ============ -->
+<!-- Core -->
+<script src="js/utils.js?v=6"></script>
+<script src="js/language.js?v=6"></script>
+<script src="js/storage.js?v=6"></script>
+<script src="js/theme.js?v=6"></script>
+<script src="js/settings.js?v=6"></script>
+<script src="js/auth.js?v=6"></script>
+<script src="js/users.js?v=6"></script>
+
+<!-- Phase 2 — Core Modules -->
+<script src="js/nurses.js?v=6"></script>
+<script src="js/patients.js?v=6"></script>
+<script src="js/departments.js?v=6"></script>
+<script src="js/skills.js?v=6"></script>
+<script src="js/attendance.js?v=6"></script>
+<script src="js/shifts.js?v=6"></script>
+
+<!-- Phase 3 — Assignment -->
+<script src="js/acuity.js?v=6"></script>
+<script src="js/workload.js?v=6"></script>
+<script src="js/assignment.js?v=6"></script>
+
+<!-- Phase 4 — Operations -->
+<script src="js/tasks.js?v=6"></script>
+<script src="js/notifications.js?v=6"></script>
+<script src="js/escalation.js?v=6"></script>
+<script src="js/documentation.js?v=6"></script>
+<script src="js/timeline.js?v=6"></script>
+<script src="js/nurse-dashboard.js?v=6"></script>
+
+<!-- Phase 5 — Clinical -->
+<script src="js/handover.js?v=6"></script>
+<script src="js/monitoring.js?v=6"></script>
+<script src="js/medication.js?v=6"></script>
+<script src="js/care-plan.js?v=6"></script>
+<script src="js/communication.js?v=6"></script>
+<script src="js/incidents.js?v=6"></script>
+
+<!-- Phase 6 — Reports -->
+<script src="js/reports.js?v=6"></script>
+<script src="js/analytics.js?v=6"></script>
+<script src="js/audit.js?v=6"></script>
+<script src="js/backup.js?v=6"></script>
+<script src="js/monitoring-dashboard.js?v=6"></script>
+
+<!-- Router + Bootstrap -->
+<script src="js/dashboard.js?v=6"></script>
+<script src="js/navigation.js?v=6"></script>
+<script src="js/app.js?v=6"></script>
+</body>
+</html>
